@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Secure Chat Dashboard</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+        
+        :root {
+            /* DEFAULT WHITE THEME */
+            --bg-main: #f0f2f5;
+            --bg-sidebar: #ffffff;
+            --bg-header: #ffffff;
+            --text-main: #1c1e21;
+            --text-muted: #65676b;
+            --border-color: #e4e6eb;
+            --msg-mine-bg: #0084ff;
+            --msg-mine-text: #ffffff;
+            --msg-friend-bg: #e4e6eb;
+            --msg-friend-text: #1c1e21;
+            --input-bg: #f0f2f5;
+            --item-hover: #f2f2f2;
+            --accent: #0084ff;
+        }
+
+        body.dark-theme {
+            /* PREMIUM DARK THEME */
+            --bg-main: #08060f;
+            --bg-sidebar: #110e24;
+            --bg-header: #161233;
+            --text-main: #ffffff;
+            --text-muted: #6d6699;
+            --border-color: #1f1b3a;
+            --msg-mine-bg: linear-gradient(135deg, #7928ca, #ff007f);
+            --msg-mine-text: #ffffff;
+            --msg-friend-bg: #161233;
+            --msg-friend-text: #ffffff;
+            --input-bg: #0b0914;
+            --item-hover: #161233;
+            --accent: #00f2fe;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { margin: 0; display: flex; height: 100vh; background: var(--bg-main); color: var(--text-main); overflow: hidden; transition: 0.3s; }
+        
+        /* Sidebar Design */
+        #sidebar { width: 340px; background: var(--bg-sidebar); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; }
+        .sidebar-header { padding: 20px; background: var(--bg-header); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); cursor: pointer; transition: 0.2s;}
+        .sidebar-header:hover { background: var(--item-hover); }
+        .user-profile { display: flex; align-items: center; gap: 12px; }
+        .avatar { width: 40px; height: 40px; background: var(--accent); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: 600; color: #fff; text-transform: uppercase; position: relative; background-size: cover; background-position: center;}
+        .user-info .name { font-size: 15px; font-weight: 600; display: block; }
+        .user-info .username { font-size: 11px; color: var(--text-muted); }
+        .logout-btn { color: #ff4757; text-decoration: none; font-size: 13px; font-weight: 500; background: rgba(255,71,87,0.1); padding: 6px 12px; border-radius: 20px; transition: 0.2s; z-index: 10;}
+        .logout-btn:hover { background: #ff4757; color: white; }
+
+        .search-area { padding: 15px; display: flex; gap: 10px; border-bottom: 1px solid var(--border-color); }
+        .search-area input { flex: 1; padding: 12px 16px; border-radius: 12px; border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-main); outline: none; font-size: 14px; }
+        .search-area button { padding: 0 16px; border: none; background: var(--accent); color: #fff; border-radius: 12px; cursor: pointer; font-weight: 600; }
+        
+        .list-container { flex: 1; overflow-y: auto; padding: 15px; }
+        h4 { color: var(--text-muted); font-size: 11px; text-transform: uppercase; margin: 15px 5px 8px 5px; letter-spacing: 1.5px; }
+        .friend-item, .req-item { padding: 12px; margin-bottom: 8px; border-radius: 14px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: transparent; transition: 0.2s; position: relative;}
+        .friend-item:hover { background: var(--item-hover); }
+        .req-btn { background: #2ed573; color: white; border: none; padding: 6px 14px; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: 500; }
+        
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; background: #555; position: absolute; bottom: 0; right: 0; border: 2px solid var(--bg-sidebar); }
+        .online { background: #2ed573; box-shadow: 0 0 8px #2ed573; }
+
+        /* Main Chat Window Design */
+        #chat-area { flex: 1; display: flex; flex-direction: column; background: var(--bg-main); }
+        #chat-header { padding: 20px; background: var(--bg-header); border-bottom: 1px solid var(--border-color); display: flex; flex-direction: column; justify-content: center; }
+        .header-top { display: flex; justify-content: space-between; align-items: center; }
+        .active-user-title { font-weight: 600; font-size: 17px; display: flex; align-items: center; gap: 10px; }
+        .disappear-badge { font-size: 11px; color: #ff4757; background: rgba(255,71,87,0.1); padding: 5px 12px; border-radius: 20px; border: 1px solid rgba(255,71,87,0.2); display: none;}
+        
+        #typingIndicator { font-size: 12px; color: var(--accent); margin-top: 5px; height: 18px; font-style: italic; opacity: 0; transition: opacity 0.3s; }
+
+        #messages { flex: 1; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
+        
+        .msg { max-width: 60%; padding: 12px 18px; border-radius: 20px; position: relative; word-wrap: break-word; font-size: 14px; line-height: 1.5; animation: popUp 0.25s ease; }
+        .msg img { max-width: 100%; border-radius: 10px; margin-top: 5px; cursor: pointer; transition: 0.2s; }
+        .msg img:hover { opacity: 0.9; }
+        
+        @keyframes popUp { from { opacity: 0; transform: scale(0.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        
+        .my-msg { background: var(--msg-mine-bg); color: var(--msg-mine-text); align-self: flex-end; border-bottom-right-radius: 2px; }
+        .friend-msg { background: var(--msg-friend-bg); color: var(--msg-friend-text); align-self: flex-start; border-bottom-left-radius: 2px; border: 1px solid var(--border-color); }
+        .time { font-size: 10px; opacity: 0.7; margin-top: 6px; display: block; text-align: right; }
+
+        #input-area { padding: 20px; background: var(--bg-header); display: flex; display: none; gap: 12px; border-top: 1px solid var(--border-color); align-items: center;}
+        
+        .attach-btn { background: var(--item-hover); color: var(--text-main); border: 1px solid var(--border-color); width: 45px; height: 45px; border-radius: 50%; cursor: pointer; font-size: 18px; display: flex; justify-content: center; align-items: center; transition: 0.3s; }
+        #fileInput { display: none; }
+        
+        #msgInput { flex: 1; padding: 15px 22px; border: 1px solid var(--border-color); border-radius: 30px; background: var(--input-bg); color: var(--text-main); outline: none; font-size: 14px; }
+        #sendBtn { background: var(--accent); color: #fff; border: none; padding: 0 28px; height: 45px; border-radius: 30px; cursor: pointer; font-weight: 600; }
+
+        /* MODALS (Profile, Image Preview, Lightbox) */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(5px); }
+        .modal-box { background: var(--bg-header); padding: 25px; border-radius: 15px; width: 90%; max-width: 400px; color: var(--text-main); box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 1px solid var(--border-color); }
+        .modal-box h3 { margin-bottom: 15px; }
+        .modal-box input[type="text"] { width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-main); }
+        .modal-buttons { display: flex; gap: 10px; justify-content: flex-end; }
+        .btn-cancel { background: #ccc; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; color: black; }
+        .btn-save { background: var(--accent); border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; color: white; }
+        
+        .theme-toggle { margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        
+        #previewImg { max-width: 100%; max-height: 250px; border-radius: 8px; margin-bottom: 15px; display: block; margin-left: auto; margin-right: auto;}
+        #lightboxImg { max-width: 90%; max-height: 90%; border-radius: 10px; box-shadow: 0 0 20px rgba(0,0,0,0.8); }
+
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+</head>
+<body>
+
+    <div id="sidebar">
+        <div class="sidebar-header" onclick="openProfileModal(event)">
+            <div class="user-profile">
+                <div class="avatar" id="myAvatar">..</div>
+                <div class="user-info">
+                    <span class="name" id="myNameDisplay">Loading...</span>
+                    <span class="username" id="myUsernameDisplay">@...</span>
+                </div>
+            </div>
+            <a href="/logout" class="logout-btn" id="logoutBtn">Logout</a>
+        </div>
+        
+        <div class="search-area">
+            <input type="text" id="searchUser" placeholder="Search username..." autocomplete="off">
+            <button onclick="searchUser()">Find</button>
+        </div>
+        
+        <div class="list-container">
+            <h4>Friend Requests</h4>
+            <div id="requestsList"></div>
+            <h4>Secure Chats</h4>
+            <div id="friendsList"></div>
+        </div>
+    </div>
+
+    <div id="chat-area">
+        <div id="chat-header">
+            <div class="header-top">
+                <div class="active-user-title">
+                    <div class="avatar" id="chatAvatar" style="display: none;"></div>
+                    <div><div id="chatTitle">Select a user to begin conversation</div></div>
+                </div>
+                <span class="disappear-badge" id="disappearNote">🔒 End-to-End & 24h Auto-Delete</span>
+            </div>
+            <div id="typingIndicator">Typing...</div>
+        </div>
+        
+        <div id="messages"></div>
+        
+        <div id="input-area">
+            <button class="attach-btn" onclick="document.getElementById('fileInput').click()">📎</button>
+            <input type="file" id="fileInput" accept="image/*" onchange="previewImageBeforeSend(event)">
+            <input type="text" id="msgInput" placeholder="Write a message..." autocomplete="off">
+            <button id="sendBtn" onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="profileModal">
+        <div class="modal-box">
+            <h3>Edit Profile & Settings</h3>
+            <div style="text-align: center; margin-bottom: 15px;">
+                <div class="avatar" id="editProfilePic" style="width: 80px; height: 80px; margin: 0 auto; font-size: 30px; cursor: pointer;" onclick="document.getElementById('profilePicInput').click()"></div>
+                <input type="file" id="profilePicInput" accept="image/*" style="display: none;" onchange="handleProfilePicChange(event)">
+                <small style="color: var(--text-muted);">Tap to change photo</small>
+            </div>
+            <label>Name:</label>
+            <input type="text" id="editNameInput">
+            <div class="theme-toggle">
+                <label>Dark Mode:</label>
+                <input type="checkbox" id="themeCheckbox" onchange="toggleTheme()">
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-cancel" onclick="document.getElementById('profileModal').style.display='none'">Cancel</button>
+                <button class="btn-save" onclick="saveProfile()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="imagePreviewModal">
+        <div class="modal-box">
+            <h3>Send Image?</h3>
+            <img id="previewImg" src="" alt="Preview">
+            <div class="modal-buttons">
+                <button class="btn-cancel" onclick="cancelImageSend()">Cancel</button>
+                <button class="btn-save" onclick="confirmSendImage()">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="lightboxModal" onclick="this.style.display='none'">
+        <img id="lightboxImg" src="" alt="Full Screen">
+    </div>
+
+    <script>
+        // Theme System
+        if(localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-theme');
+            document.getElementById('themeCheckbox').checked = true;
+        }
+
+        function toggleTheme() {
+            if(document.getElementById('themeCheckbox').checked) {
+                document.body.classList.add('dark-theme');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.body.classList.remove('dark-theme');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        const socket = io();
+        let myId = null;
+        let currentChatFriendId = null;
+        let typingTimeout = null;
+        let pendingImageBase64 = null; // Send karne se pehle save rakhne ke liye
+        let myCurrentPic = '';
+
+        async function loadData() {
+            const res = await fetch('/get_friends');
+            const data = await res.json();
+            myId = data.my_id;
+            myCurrentPic = data.my_pic;
+            
+            document.getElementById('myNameDisplay').innerText = data.my_name;
+            document.getElementById('editNameInput').value = data.my_name;
+            document.getElementById('myUsernameDisplay').innerText = `@${data.my_username}`;
+            
+            setAvatar('myAvatar', data.my_pic, data.my_name);
+            setAvatar('editProfilePic', data.my_pic, data.my_name);
+
+            // Requests
+            const reqList = document.getElementById('requestsList');
+            reqList.innerHTML = '';
+            data.requests.forEach(req => {
+                reqList.innerHTML += `<div class="req-item">
+                    <div style="font-size:14px; font-weight:500;">${req.name}</div>
+                    <button class="req-btn" onclick="acceptRequest(${req.id})">Accept</button>
+                </div>`;
+            });
+
+            // Friends
+            const friendList = document.getElementById('friendsList');
+            friendList.innerHTML = '';
+            data.friends.forEach(f => {
+                let statusClass = f.is_online ? 'status-dot online' : 'status-dot';
+                
+                let avatarStyle = f.pic ? `background-image: url('${f.pic}'); color: transparent;` : '';
+                let avatarText = f.pic ? '' : f.name.charAt(0);
+
+                friendList.innerHTML += `<div class="friend-item" onclick="openChat(${f.id}, '${f.name}', '${f.username}', '${f.pic}')" id="friend-box-${f.id}">
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <div class="avatar" style="width:32px; height:32px; font-size:13px; ${avatarStyle}">
+                            ${avatarText}
+                            <div class="${statusClass}" id="status-${f.id}"></div>
+                        </div>
+                        <div>
+                            <span style="font-size:14px; font-weight:500; display:block;">${f.name}</span>
+                            <span style="font-size:11px; color:var(--text-muted);">@${f.username}</span>
+                        </div>
+                    </div>
+                </div>`;
+            });
+        }
+
+        // Set Avatar Helper
+        function setAvatar(elementId, picBase64, name) {
+            const el = document.getElementById(elementId);
+            if(picBase64) {
+                el.style.backgroundImage = `url('${picBase64}')`;
+                el.innerText = '';
+            } else {
+                el.style.backgroundImage = 'none';
+                el.innerText = name ? name.charAt(0) : '';
+            }
+        }
+
+        // --- PROFILE EDIT LOGIC ---
+        function openProfileModal(e) {
+            if(e.target.id === 'logoutBtn') return; // Logout par click ho to modal na khule
+            document.getElementById('profileModal').style.display = 'flex';
+        }
+
+        function handleProfilePicChange(event) {
+            const file = event.target.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    myCurrentPic = e.target.result;
+                    setAvatar('editProfilePic', myCurrentPic, document.getElementById('editNameInput').value);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        async function saveProfile() {
+            const newName = document.getElementById('editNameInput').value;
+            await fetch('/api/update_profile', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({name: newName, profile_pic: myCurrentPic})
+            });
+            document.getElementById('profileModal').style.display = 'none';
+            loadData(); // Refresh UI
+        }
+        // --------------------------
+
+        socket.on('user_status_change', function(data) {
+            const statusIndicator = document.getElementById(`status-${data.user_id}`);
+            if(statusIndicator) {
+                if(data.status === 'online') statusIndicator.className = 'status-dot online';
+                else statusIndicator.className = 'status-dot';
+            }
+        });
+
+        async function searchUser() {
+            const username = document.getElementById('searchUser').value;
+            if(!username) return;
+            const res = await fetch('/search_user', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({username}) });
+            const data = await res.json();
+            
+            if(res.ok) {
+                if(confirm(`Send request to ${data.name}?`)) {
+                    await fetch('/send_request', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({receiver_id: data.id}) });
+                    alert("Request sent!");
+                    document.getElementById('searchUser').value = '';
+                }
+            } else { alert(data.error); }
+        }
+
+        async function acceptRequest(reqId) {
+            await fetch('/accept_request', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({request_id: reqId}) });
+            loadData();
+        }
+
+        async function openChat(friendId, friendName, friendUsername, friendPic) {
+            currentChatFriendId = friendId;
+            document.getElementById('chatTitle').innerHTML = `${friendName} <span style="font-size:12px; color:var(--text-muted); font-weight:400; margin-left:5px;">@${friendUsername}</span>`;
+            
+            const chatAvatar = document.getElementById('chatAvatar');
+            chatAvatar.style.display = 'flex';
+            setAvatar('chatAvatar', friendPic === 'null' ? null : friendPic, friendName);
+            
+            document.getElementById('disappearNote').style.display = 'block';
+            document.getElementById('input-area').style.display = 'flex';
+            
+            socket.emit('join_private', {friend_id: friendId});
+
+            const res = await fetch(`/get_messages/${friendId}`);
+            const messages = await res.json();
+            
+            const msgBox = document.getElementById('messages');
+            msgBox.innerHTML = '';
+            messages.forEach(m => appendMessage(m.text, m.time, m.sender_id === myId));
+            msgBox.scrollTop = msgBox.scrollHeight;
+        }
+
+        // Typing
+        document.getElementById("msgInput").addEventListener("input", function() {
+            if(currentChatFriendId) socket.emit('typing', { friend_id: currentChatFriendId });
+        });
+
+        socket.on('display_typing', function(data) {
+            if(data.sender_id === currentChatFriendId) {
+                const indicator = document.getElementById('typingIndicator');
+                indicator.style.opacity = 1; 
+                clearTimeout(typingTimeout);
+                typingTimeout = setTimeout(() => { indicator.style.opacity = 0; }, 2000);
+            }
+        });
+
+        // --- IMAGE SEND PREVIEW LOGIC ---
+        function previewImageBeforeSend(event) {
+            const file = event.target.files[0];
+            if (file && currentChatFriendId) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    pendingImageBase64 = e.target.result;
+                    document.getElementById('previewImg').src = pendingImageBase64;
+                    document.getElementById('imagePreviewModal').style.display = 'flex';
+                };
+                reader.readAsDataURL(file);
+            }
+            event.target.value = '';
+        }
+
+        function cancelImageSend() {
+            pendingImageBase64 = null;
+            document.getElementById('imagePreviewModal').style.display = 'none';
+        }
+
+        function confirmSendImage() {
+            if(pendingImageBase64 && currentChatFriendId) {
+                socket.emit('private_message', { friend_id: currentChatFriendId, msg: pendingImageBase64 });
+                cancelImageSend();
+            }
+        }
+        // --------------------------------
+
+        // --- IMAGE LIGHTBOX LOGIC ---
+        function openLightbox(src) {
+            document.getElementById('lightboxImg').src = src;
+            document.getElementById('lightboxModal').style.display = 'flex';
+        }
+        // ----------------------------
+
+        function sendMessage() {
+            const input = document.getElementById('msgInput');
+            const text = input.value;
+            if(text.trim() !== "" && currentChatFriendId) {
+                socket.emit('private_message', { friend_id: currentChatFriendId, msg: text });
+                input.value = '';
+            }
+        }
+
+        socket.on('receive_message', function(data) {
+            if(data.sender_id === currentChatFriendId || data.sender_id === myId) {
+                appendMessage(data.text, data.time, data.sender_id === myId);
+                if(data.sender_id === currentChatFriendId) document.getElementById('typingIndicator').style.opacity = 0;
+            }
+        });
+
+        function appendMessage(text, time, isMine) {
+            const msgBox = document.getElementById('messages');
+            const div = document.createElement('div');
+            div.className = isMine ? 'msg my-msg' : 'msg friend-msg';
+            
+            // Image receive hui toh Lightbox on click lagao
+            if(text.startsWith('data:image/')) {
+                div.innerHTML = `<img src="${text}" alt="Image" onclick="openLightbox('${text}')"> <span class="time">${time}</span>`;
+            } else {
+                div.innerHTML = `${text} <span class="time">${time}</span>`;
+            }
+            
+            msgBox.appendChild(div);
+            msgBox.scrollTop = msgBox.scrollHeight;
+        }
+
+        document.getElementById("msgInput").addEventListener("keypress", function(e) {
+            if (e.key === "Enter") sendMessage();
+        });
+
+        loadData();
+    </script>
+</body>
+</html>

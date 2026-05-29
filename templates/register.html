@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Chat - Register</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { background: linear-gradient(135deg, #0f0c20, #15102a); height: 100vh; display: flex; justify-content: center; align-items: center; color: #fff; overflow: hidden; }
+        .box { background: rgba(255, 255, 255, 0.03); padding: 40px; border-radius: 24px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); width: 100%; max-width: 380px; text-align: center; }
+        h2 { margin-bottom: 8px; font-weight: 600; font-size: 28px; background: linear-gradient(90deg, #00f2fe, #4facfe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        p { font-size: 13px; color: #aaa; margin-bottom: 24px; }
+        .input-group { position: relative; margin-bottom: 16px; text-align: left; }
+        label { font-size: 12px; color: #00f2fe; font-weight: 500; margin-left: 5px; display: block; margin-bottom: 5px; }
+        input { width: 100%; padding: 14px 18px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: white; font-size: 15px; outline: none; transition: 0.3s; }
+        input:focus { border-color: #00f2fe; box-shadow: 0 0 10px rgba(0, 242, 254, 0.2); }
+        button { width: 100%; padding: 14px; border: none; border-radius: 12px; background: linear-gradient(90deg, #00f2fe, #4facfe); color: white; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 15px rgba(0, 242, 254, 0.3); transition: 0.2s; }
+        button:hover { transform: translateY(-2px); opacity: 0.95; }
+        .link { margin-top: 20px; font-size: 13px; color: #aaa; }
+        .link a { color: #00f2fe; text-decoration: none; font-weight: 500; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>Create Account</h2>
+        <p>Join the ultra secure chat platform</p>
+        
+        <div class="input-group">
+            <label>Full Name</label>
+            <input type="text" id="regName" placeholder="e.g. Vishal Yadav" autocomplete="off">
+        </div>
+        <div class="input-group">
+            <label>Unique Username</label>
+            <input type="text" id="regUsername" placeholder="e.g. vishal99" autocomplete="off">
+        </div>
+        <div class="input-group">
+            <label>Password</label>
+            <input type="password" id="regPassword" placeholder="••••••••">
+        </div>
+        
+        <button onclick="handleRegister()">Register Now</button>
+        <div class="link">Pehle se account hai? <a href="/login">Login karein</a></div>
+    </div>
+
+    <script>
+        async function handleRegister() {
+            const name = document.getElementById('regName').value;
+            const username = document.getElementById('regUsername').value;
+            const password = document.getElementById('regPassword').value;
+
+            const res = await fetch('/api/register', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({name, username, password})
+            });
+            const data = await res.json();
+            
+            if (res.ok) {
+                alert(data.success);
+                window.location.href = '/login'; // Turnt login page par redirect
+            } else {
+                alert(data.error);
+            }
+        }
+    </script>
+</body>
+</html>
