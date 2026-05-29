@@ -1,6 +1,0 @@
-Flask
-Flask-SocketIO
-Flask-SQLAlchemy
-Werkzeug
-gunicorn
-eventlet
