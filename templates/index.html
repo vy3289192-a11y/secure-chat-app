@@ -44,7 +44,6 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
         body { margin: 0; display: flex; height: 100vh; background: var(--bg-main); color: var(--text-main); overflow: hidden; transition: 0.3s; position: relative; }
         
-        /* Sidebar Design */
         #sidebar { width: 340px; background: var(--bg-sidebar); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; z-index: 10; transition: transform 0.3s ease; }
         .sidebar-header { padding: 20px; background: var(--bg-header); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); cursor: pointer; transition: 0.2s;}
         .sidebar-header:hover { background: var(--item-hover); }
@@ -68,7 +67,6 @@
         .status-dot { width: 10px; height: 10px; border-radius: 50%; background: #555; position: absolute; bottom: 0; right: 0; border: 2px solid var(--bg-sidebar); }
         .online { background: #2ed573; box-shadow: 0 0 8px #2ed573; }
 
-        /* Main Chat Window Design */
         #chat-area { flex: 1; display: flex; flex-direction: column; background: var(--bg-main); position: relative; z-index: 5; }
         #chat-header { padding: 20px; background: var(--bg-header); border-bottom: 1px solid var(--border-color); display: flex; flex-direction: column; justify-content: center; }
         .header-top { display: flex; justify-content: space-between; align-items: center; }
@@ -117,17 +115,16 @@
         ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
 
-        /* ================= MOBILE RESPONSIVE CSS ================= */
+        /* MOBILE RESPONSIVE CSS */
         @media (max-width: 768px) {
             #sidebar { width: 100%; position: absolute; left: 0; top: 0; height: 100%; }
             #chat-area { width: 100%; position: absolute; left: 0; top: 0; height: 100%; transform: translateX(100%); transition: transform 0.3s ease; }
             
-            /* Jab chat open ho tab Sidebar chhup jaye aur Chat bahar aa jaye */
             body.chat-active #sidebar { transform: translateX(-30%); opacity: 0; }
             body.chat-active #chat-area { transform: translateX(0); }
             
             #backBtn { display: block; }
-            .disappear-badge { display: none !important; } /* Mobile me space bachane ke liye chhupaya */
+            .disappear-badge { display: none !important; } 
             .msg { max-width: 85%; }
             
             #chat-header { padding: 15px; }
@@ -168,7 +165,8 @@
         <div id="chat-header">
             <div class="header-top">
                 <div class="active-user-title">
-                    <button id="backBtn" onclick="closeChat()">&#8592;</button> <div class="avatar" id="chatAvatar" style="display: none; width: 35px; height: 35px; font-size: 14px;"></div>
+                    <button id="backBtn" onclick="closeChat()">&#8592;</button> 
+                    <div class="avatar" id="chatAvatar" style="display: none; width: 35px; height: 35px; font-size: 14px;"></div>
                     <div><div id="chatTitle">Select a user to chat</div></div>
                 </div>
                 <span class="disappear-badge" id="disappearNote">🔒 24h Auto-Delete</span>
@@ -223,7 +221,6 @@
     </div>
 
     <script>
-        // Theme System
         if(localStorage.getItem('theme') === 'dark') {
             document.body.classList.add('dark-theme');
             document.getElementById('themeCheckbox').checked = true;
@@ -368,7 +365,6 @@
             document.getElementById('disappearNote').style.display = 'block';
             document.getElementById('input-area').style.display = 'flex';
             
-            // MOBILE: Open Chat Window Animation
             document.body.classList.add('chat-active');
             
             socket.emit('join_private', {friend_id: friendId});
@@ -382,13 +378,11 @@
             msgBox.scrollTop = msgBox.scrollHeight;
         }
 
-        // MOBILE: Back button logic
         function closeChat() {
             document.body.classList.remove('chat-active');
             currentChatFriendId = null;
         }
 
-        // Typing
         document.getElementById("msgInput").addEventListener("input", function() {
             if(currentChatFriendId) socket.emit('typing', { friend_id: currentChatFriendId });
         });
