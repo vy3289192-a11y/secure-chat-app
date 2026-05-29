@@ -28,11 +28,11 @@
         
         <div class="input-group">
             <label>Full Name</label>
-            <input type="text" id="regName" placeholder="e.g. Vishal Yadav" autocomplete="off">
+            <input type="text" id="regName" placeholder="e.g. Rahul Kumar" autocomplete="off">
         </div>
         <div class="input-group">
             <label>Unique Username</label>
-            <input type="text" id="regUsername" placeholder="e.g. vishal99" autocomplete="off">
+            <input type="text" id="regUsername" placeholder="e.g. rahul99" autocomplete="off">
         </div>
         <div class="input-group">
             <label>Password</label>
@@ -58,7 +58,7 @@
             
             if (res.ok) {
                 alert(data.success);
-                window.location.href = '/login'; // Turnt login page par redirect
+                window.location.href = '/login'; 
             } else {
                 alert(data.error);
             }
