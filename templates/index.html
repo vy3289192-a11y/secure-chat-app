@@ -8,7 +8,6 @@
         @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;500;600&display=swap');
         
         :root {
-            /* WhatsApp Dark Theme Colors based on screenshot */
             --wa-bg: #0b141a;
             --wa-header-bg: #0b141a;
             --wa-search-bg: #202c33;
@@ -25,29 +24,27 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { margin: 0; display: flex; height: 100vh; background: var(--wa-bg); color: var(--wa-text-main); overflow: hidden; position: relative; }
+        
+        /* Mobile Viewport Fix */
+        body { margin: 0; display: flex; height: 100vh; height: 100dvh; background: var(--wa-bg); color: var(--wa-text-main); overflow: hidden; position: relative; }
         
         /* ================= MAIN SCREEN (CHATS LIST) ================= */
         #main-screen { width: 100%; height: 100%; display: flex; flex-direction: column; position: relative; z-index: 10; transition: transform 0.3s ease; }
         
-        /* Header */
-        .wa-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: var(--wa-header-bg); }
+        .wa-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: var(--wa-header-bg); flex-shrink: 0;}
         .wa-header h2 { font-size: 22px; font-weight: 500; color: var(--wa-text-main); }
-        .wa-header-icons { display: flex; gap: 20px; color: var(--wa-text-main); font-size: 20px; cursor: pointer; }
+        .wa-header-icons { display: flex; gap: 20px; color: var(--wa-text-main); font-size: 20px; cursor: pointer; align-items: center;}
         
-        /* Search Bar */
-        .wa-search-container { padding: 5px 15px 15px 15px; background: var(--wa-header-bg); }
+        .wa-search-container { padding: 5px 15px 15px 15px; background: var(--wa-header-bg); flex-shrink: 0;}
         .wa-search-box { display: flex; align-items: center; background: var(--wa-search-bg); border-radius: 25px; padding: 10px 15px; }
         .wa-search-box span { color: var(--wa-text-muted); font-size: 16px; margin-right: 15px; }
         .wa-search-box input { flex: 1; background: transparent; border: none; color: var(--wa-text-main); font-size: 15px; outline: none; }
         .wa-search-box input::placeholder { color: var(--wa-text-muted); }
 
-        /* List Area (Chats, Requests, Coming Soon) */
-        #content-area { flex: 1; overflow-y: auto; display: flex; flex-direction: column; padding-bottom: 70px; /* Space for bottom nav */ }
+        #content-area { flex: 1; overflow-y: auto; display: flex; flex-direction: column; padding-bottom: 75px; overscroll-behavior-y: contain;}
         
         .list-section-title { font-size: 13px; color: var(--wa-text-muted); margin: 15px 20px 5px 20px; font-weight: 500; display: flex; align-items: center; gap: 15px;}
         
-        /* Chat Item Style */
         .wa-item { display: flex; align-items: center; padding: 12px 15px; cursor: pointer; transition: background 0.2s; }
         .wa-item:hover { background: #202c33; }
         .wa-avatar { width: 48px; height: 48px; border-radius: 50%; background: #607d8b; display: flex; justify-content: center; align-items: center; font-size: 20px; color: white; margin-right: 15px; flex-shrink: 0; background-size: cover; background-position: center; position: relative;}
@@ -64,37 +61,35 @@
 
         .req-btn { background: var(--wa-green-dark); color: var(--wa-bg); border: none; padding: 6px 15px; border-radius: 20px; font-weight: 600; cursor: pointer; }
 
-        /* Coming Soon View */
         #coming-soon-view { display: none; flex: 1; justify-content: center; align-items: center; flex-direction: column; color: var(--wa-text-muted); }
         #coming-soon-view h3 { color: var(--wa-text-main); margin-bottom: 10px; font-size: 24px;}
 
-        /* Floating Action Button (FAB) */
-        .fab { position: fixed; bottom: 85px; right: 20px; width: 55px; height: 55px; background: var(--wa-green); border-radius: 16px; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); cursor: pointer; z-index: 20; transition: transform 0.2s; }
+        .fab { position: absolute; bottom: 85px; right: 20px; width: 55px; height: 55px; background: var(--wa-green); border-radius: 16px; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); cursor: pointer; z-index: 20; transition: transform 0.2s; }
         .fab:active { transform: scale(0.95); }
         .fab span { font-size: 24px; color: var(--wa-bg); font-weight: bold; }
 
-        /* Bottom Navigation */
-        #bottom-nav { display: flex; justify-content: space-around; align-items: center; background: var(--wa-header-bg); border-top: 1px solid var(--wa-border); position: fixed; bottom: 0; width: 100%; height: 70px; z-index: 20; padding: 0 10px; }
+        #bottom-nav { display: flex; justify-content: space-around; align-items: center; background: var(--wa-header-bg); border-top: 1px solid var(--wa-border); position: absolute; bottom: 0; left: 0; width: 100%; height: 70px; z-index: 20; padding: 0 10px; flex-shrink: 0;}
         .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--wa-text-muted); cursor: pointer; width: 25%; }
         .nav-icon { padding: 4px 15px; border-radius: 20px; margin-bottom: 5px; font-size: 20px; transition: 0.2s; }
         .nav-text { font-size: 13px; font-weight: 500; }
-        
         .nav-item.active .nav-icon { background: var(--wa-nav-active-bg); color: var(--wa-nav-active-text); }
         .nav-item.active .nav-text { color: var(--wa-text-main); }
 
 
-        /* ================= CHAT SCREEN (SLIDES IN) ================= */
-        #chat-screen { width: 100%; height: 100%; position: absolute; left: 0; top: 0; background: var(--wa-chat-bg); z-index: 50; transform: translateX(100%); transition: transform 0.3s ease; display: flex; flex-direction: column; }
+        /* ================= CHAT SCREEN ================= */
+        /* Fixed position solves the mobile bottom cut-off issue */
+        #chat-screen { width: 100%; position: fixed; top: 0; bottom: 0; left: 0; background: var(--wa-chat-bg); z-index: 50; transform: translateX(100%); transition: transform 0.3s ease; display: flex; flex-direction: column; }
         body.chat-active #chat-screen { transform: translateX(0); }
         body.chat-active #main-screen { transform: translateX(-30%); opacity: 0.5; }
 
-        .chat-header-bar { display: flex; align-items: center; padding: 10px 15px; background: var(--wa-header-bg); gap: 10px; border-bottom: 1px solid var(--wa-border); }
-        .back-btn { font-size: 20px; color: var(--wa-text-main); cursor: pointer; padding-right: 5px; }
+        .chat-header-bar { display: flex; align-items: center; padding: 10px 15px; background: var(--wa-header-bg); gap: 10px; border-bottom: 1px solid var(--wa-border); flex-shrink: 0;}
+        .back-btn { font-size: 24px; color: var(--wa-text-main); cursor: pointer; padding-right: 5px; font-weight: bold;}
         .chat-header-info { flex: 1; display: flex; flex-direction: column; }
         .chat-header-name { font-size: 16px; font-weight: 500; color: var(--wa-text-main); }
         .chat-header-sub { font-size: 12px; color: var(--wa-text-muted); }
 
-        #messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-size: cover; background-blend-mode: overlay; background-color: rgba(11, 20, 26, 0.9); }
+        /* Added flex-basis to push input area properly */
+        #messages { flex: 1; flex-basis: 0; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-size: cover; background-blend-mode: overlay; background-color: rgba(11, 20, 26, 0.9); overscroll-behavior-y: contain;}
         
         .msg { max-width: 80%; padding: 8px 12px; border-radius: 12px; position: relative; word-wrap: break-word; font-size: 15px; line-height: 1.4; box-shadow: 0 1px 1px rgba(0,0,0,0.1); }
         .my-msg { background: var(--wa-msg-mine); align-self: flex-end; border-top-right-radius: 4px; }
@@ -102,10 +97,11 @@
         .msg img { max-width: 100%; border-radius: 8px; margin-top: 5px; cursor: pointer; }
         .time { font-size: 11px; color: rgba(255,255,255,0.6); display: block; text-align: right; margin-top: 2px; float: right; margin-left: 10px; margin-top: 5px;}
 
-        #input-area { padding: 10px; background: var(--wa-header-bg); display: flex; gap: 10px; align-items: center; }
+        /* Input Area fixed padding for mobile */
+        #input-area { padding: 10px 15px; padding-bottom: max(10px, env(safe-area-inset-bottom)); background: var(--wa-header-bg); display: flex; display: none; gap: 10px; align-items: center; flex-shrink: 0; border-top: 1px solid var(--wa-border);}
         .attach-btn { background: transparent; color: var(--wa-text-muted); border: none; font-size: 24px; cursor: pointer; padding: 5px; }
         #msgInput { flex: 1; padding: 12px 20px; border: none; border-radius: 25px; background: var(--wa-search-bg); color: var(--wa-text-main); outline: none; font-size: 15px; }
-        #sendBtn { background: var(--wa-green-dark); color: var(--wa-bg); border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 18px; }
+        #sendBtn { background: var(--wa-green-dark); color: var(--wa-bg); border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 18px; flex-shrink: 0;}
 
         /* MODALS */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 1000; }
@@ -119,12 +115,23 @@
         #previewImg { max-width: 100%; max-height: 250px; border-radius: 8px; margin-bottom: 15px; display: block; margin-left: auto; margin-right: auto;}
         #lightboxImg { max-width: 95%; max-height: 95%; border-radius: 10px; }
 
-        /* Responsive Fix for Desktop */
+        /* ================= DESKTOP FIX (WHATSAPP WEB SPLIT SCREEN) ================= */
         @media (min-width: 768px) {
-            body { justify-content: center; background: #000; }
-            #main-screen, #chat-screen, #bottom-nav, .fab { max-width: 450px; margin: 0 auto; border-left: 1px solid var(--wa-border); border-right: 1px solid var(--wa-border); }
-            #chat-screen { left: auto; }
-            .fab { right: calc(50% - 200px); }
+            body { flex-direction: row; }
+            #main-screen { width: 400px; flex-shrink: 0; border-right: 1px solid var(--wa-border); }
+            body.chat-active #main-screen { transform: none; opacity: 1; }
+            
+            #chat-screen { position: relative; flex: 1; transform: translateX(0); z-index: 5; border-left: 1px solid var(--wa-border); display: flex;}
+            
+            /* Hide back button on laptop since it's split screen */
+            .back-btn { display: none !important; }
+            
+            /* Initial state before selecting a chat */
+            #chat-header-content { display: none; }
+            body.chat-active #chat-header-content { display: flex; width: 100%; align-items: center; gap: 10px; }
+            
+            #messages, #input-area, #chatTitle, #typingIndicator { opacity: 0.2; pointer-events: none;}
+            body.chat-active #messages, body.chat-active #input-area, body.chat-active #chatTitle, body.chat-active #typingIndicator { opacity: 1; pointer-events: auto;}
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
@@ -136,7 +143,7 @@
         <div class="wa-header">
             <h2>WhatsApp</h2>
             <div class="wa-header-icons">
-                <span>📸</span>
+                <span title="Refresh App" onclick="location.reload()">↻</span> <span>📸</span>
                 <span onclick="openProfileModal()">⚙️</span>
                 <span onclick="window.location.href='/logout'">🚪</span>
             </div>
@@ -155,7 +162,8 @@
                 <div id="requestsList"></div>
             </div>
             
-            <div class="list-section-title" id="chatTitleSection">📝 Archived</div> <div id="friendsList"></div>
+            <div class="list-section-title" id="chatTitleSection">📝 Archived</div>
+            <div id="friendsList"></div>
         </div>
 
         <div id="coming-soon-view">
@@ -192,12 +200,14 @@
     <div id="chat-screen">
         <div class="chat-header-bar">
             <div class="back-btn" onclick="closeChat()">&#8592;</div>
-            <div class="wa-avatar" id="chatAvatar" style="width: 40px; height: 40px; font-size: 16px;"></div>
-            <div class="chat-header-info">
-                <span class="chat-header-name" id="chatTitle">User Name</span>
-                <span class="chat-header-sub" id="typingIndicator">tap here for info</span>
+            <div id="chat-header-content" style="display: flex; align-items: center; flex: 1; gap: 10px;">
+                <div class="wa-avatar" id="chatAvatar" style="width: 40px; height: 40px; font-size: 16px; display: none;"></div>
+                <div class="chat-header-info">
+                    <span class="chat-header-name" id="chatTitle">Select a user to chat</span>
+                    <span class="chat-header-sub" id="typingIndicator"></span>
+                </div>
+                <div style="color: var(--wa-text-main); font-size: 20px; cursor: pointer;" onclick="location.reload()">↻</div> <div style="color: var(--wa-text-main); font-size: 20px;">⋮</div>
             </div>
-            <div style="color: var(--wa-text-main); font-size: 20px;">⋮</div>
         </div>
         
         <div id="messages"></div>
@@ -262,24 +272,21 @@
         let pendingImageBase64 = null; 
         let myCurrentPic = '';
 
-        // --- TAB SWITCHING LOGIC ---
         function switchTab(tabName, element) {
-            // Remove active class from all tabs
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             element.classList.add('active');
 
             if(tabName === 'chats') {
                 document.getElementById('content-area').style.display = 'flex';
                 document.getElementById('coming-soon-view').style.display = 'none';
-                document.querySelector('.fab').style.display = 'flex'; // Show FAB on chats
+                document.querySelector('.fab').style.display = 'flex'; 
             } else {
                 document.getElementById('content-area').style.display = 'none';
                 document.getElementById('coming-soon-view').style.display = 'flex';
-                document.querySelector('.fab').style.display = 'none'; // Hide FAB
+                document.querySelector('.fab').style.display = 'none'; 
             }
         }
 
-        // --- LOAD DATA ---
         async function loadData() {
             const res = await fetch('/get_friends');
             const data = await res.json();
@@ -289,7 +296,6 @@
             document.getElementById('editNameInput').value = data.my_name;
             setAvatar('editProfilePic', data.my_pic, data.my_name);
 
-            // Requests List
             const reqListContainer = document.getElementById('requestsListContainer');
             const reqList = document.getElementById('requestsList');
             reqList.innerHTML = '';
@@ -314,11 +320,9 @@
                 reqListContainer.style.display = 'none';
             }
 
-            // Friends List (Main Chats)
             const friendList = document.getElementById('friendsList');
             friendList.innerHTML = '';
             
-            // Add self as top pinned item (like screenshot "Vishal Bhai (You)")
             let myAvatarStyle = data.my_pic ? `background-image: url('${data.my_pic}'); color: transparent;` : '';
             friendList.innerHTML += `
                 <div class="wa-item">
@@ -369,7 +373,6 @@
             }
         }
 
-        // --- SEARCH LOCAL CHATS ---
         function filterLocalChats() {
             let input = document.getElementById('localSearch').value.toLowerCase();
             let items = document.getElementsByClassName('friend-chat-item');
@@ -383,7 +386,6 @@
             }
         }
 
-        // --- ADD NEW CONTACT (API SEARCH) ---
         function openAddUserModal() {
             document.getElementById('addUserModal').style.display = 'flex';
         }
@@ -404,7 +406,6 @@
             } else { alert(data.error); }
         }
 
-        // --- PROFILE EDIT ---
         function openProfileModal() { document.getElementById('profileModal').style.display = 'flex'; }
         
         function handleProfilePicChange(event) {
@@ -435,16 +436,17 @@
             loadData();
         }
 
-        // --- CHAT WINDOW LOGIC ---
         async function openChat(friendId, friendName, friendUsername, friendPic) {
             currentChatFriendId = friendId;
             document.getElementById('chatTitle').innerText = friendName;
             document.getElementById('typingIndicator').innerText = `@${friendUsername}`;
             
+            const chatAvatar = document.getElementById('chatAvatar');
+            chatAvatar.style.display = 'flex';
             setAvatar('chatAvatar', friendPic === 'null' ? null : friendPic, friendName);
             
-            // Slide in animation
             document.body.classList.add('chat-active');
+            document.getElementById('input-area').style.display = 'flex';
             
             socket.emit('join_private', {friend_id: friendId});
 
@@ -460,6 +462,7 @@
         function closeChat() {
             document.body.classList.remove('chat-active');
             currentChatFriendId = null;
+            document.getElementById('input-area').style.display = 'none';
         }
 
         socket.on('user_status_change', function(data) {
