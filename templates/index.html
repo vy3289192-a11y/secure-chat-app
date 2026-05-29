@@ -3,135 +3,168 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WhatsApp Clone Chat</title>
+    <title>Premium Secure Chat</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
         
         :root {
-            --wa-bg: #0b141a;
-            --wa-header-bg: #0b141a;
-            --wa-search-bg: #202c33;
-            --wa-text-main: #e9edef;
-            --wa-text-muted: #8696a0;
-            --wa-green: #25d366;
-            --wa-green-dark: #00a884;
-            --wa-nav-active-bg: #0f3629;
-            --wa-nav-active-text: #d9fee2;
-            --wa-border: #222d34;
-            --wa-chat-bg: #0b141a;
-            --wa-msg-mine: #005c4b;
-            --wa-msg-friend: #202c33;
+            /* Ultra Premium OLED Dark Palette */
+            --bg-base: #000000;
+            --bg-panel: #0f0f11;
+            --bg-hover: #1a1a1d;
+            --text-main: #f5f5f7;
+            --text-muted: #8e8e93;
+            --accent: #10b981; /* Premium Emerald Green */
+            --accent-glow: rgba(16, 185, 129, 0.25);
+            --border: rgba(255, 255, 255, 0.06);
+            --msg-mine-bg: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --msg-mine-text: #ffffff;
+            --msg-friend-bg: #1c1c1f;
+            --msg-friend-text: #f5f5f7;
+            --glass-bg: rgba(15, 15, 17, 0.7);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent;}
         
-        /* Mobile Viewport Fix */
-        body { margin: 0; display: flex; height: 100vh; height: 100dvh; background: var(--wa-bg); color: var(--wa-text-main); overflow: hidden; position: relative; }
+        body { margin: 0; display: flex; height: 100vh; height: 100dvh; background: var(--bg-base); color: var(--text-main); overflow: hidden; position: relative; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
         
         /* ================= MAIN SCREEN (CHATS LIST) ================= */
-        #main-screen { width: 100%; height: 100%; display: flex; flex-direction: column; position: relative; z-index: 10; transition: transform 0.3s ease; }
+        #main-screen { width: 100%; height: 100%; display: flex; flex-direction: column; background: var(--bg-panel); position: relative; z-index: 10; transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1); }
         
-        .wa-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: var(--wa-header-bg); flex-shrink: 0;}
-        .wa-header h2 { font-size: 22px; font-weight: 500; color: var(--wa-text-main); }
-        .wa-header-icons { display: flex; gap: 20px; color: var(--wa-text-main); font-size: 20px; cursor: pointer; align-items: center;}
+        .wa-header { display: flex; justify-content: space-between; align-items: center; padding: 18px 20px; background: var(--bg-panel); flex-shrink: 0; border-bottom: 1px solid var(--border);}
+        .wa-header h2 { font-size: 20px; font-weight: 600; letter-spacing: -0.5px; }
+        .wa-header-icons { display: flex; gap: 22px; color: var(--text-main); font-size: 18px; cursor: pointer; align-items: center;}
+        .icon-btn { transition: transform 0.2s; }
+        .icon-btn:hover { transform: scale(1.1); color: var(--accent); }
         
-        .wa-search-container { padding: 5px 15px 15px 15px; background: var(--wa-header-bg); flex-shrink: 0;}
-        .wa-search-box { display: flex; align-items: center; background: var(--wa-search-bg); border-radius: 25px; padding: 10px 15px; }
-        .wa-search-box span { color: var(--wa-text-muted); font-size: 16px; margin-right: 15px; }
-        .wa-search-box input { flex: 1; background: transparent; border: none; color: var(--wa-text-main); font-size: 15px; outline: none; }
-        .wa-search-box input::placeholder { color: var(--wa-text-muted); }
+        .wa-search-container { padding: 15px 20px; background: var(--bg-panel); flex-shrink: 0;}
+        .wa-search-box { display: flex; align-items: center; background: rgba(255,255,255,0.05); border-radius: 14px; padding: 10px 15px; border: 1px solid var(--border); transition: 0.3s;}
+        .wa-search-box:focus-within { border-color: var(--accent); background: rgba(16,185,129,0.05); box-shadow: 0 0 0 3px var(--accent-glow);}
+        .wa-search-box span { color: var(--text-muted); font-size: 14px; margin-right: 12px; }
+        .wa-search-box input { flex: 1; background: transparent; border: none; color: var(--text-main); font-size: 14px; outline: none; }
+        .wa-search-box input::placeholder { color: var(--text-muted); }
 
         #content-area { flex: 1; overflow-y: auto; display: flex; flex-direction: column; padding-bottom: 75px; overscroll-behavior-y: contain;}
         
-        .list-section-title { font-size: 13px; color: var(--wa-text-muted); margin: 15px 20px 5px 20px; font-weight: 500; display: flex; align-items: center; gap: 15px;}
+        .list-section-title { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin: 15px 20px 8px 20px; font-weight: 600;}
         
-        .wa-item { display: flex; align-items: center; padding: 12px 15px; cursor: pointer; transition: background 0.2s; }
-        .wa-item:hover { background: #202c33; }
-        .wa-avatar { width: 48px; height: 48px; border-radius: 50%; background: #607d8b; display: flex; justify-content: center; align-items: center; font-size: 20px; color: white; margin-right: 15px; flex-shrink: 0; background-size: cover; background-position: center; position: relative;}
-        .wa-item-details { flex: 1; border-bottom: 1px solid var(--wa-border); padding-bottom: 12px; display: flex; flex-direction: column; justify-content: center; }
+        .wa-item { display: flex; align-items: center; padding: 12px 20px; cursor: pointer; transition: 0.2s; position: relative;}
+        .wa-item:hover { background: var(--bg-hover); }
+        .wa-item.active-chat { background: rgba(16, 185, 129, 0.1); }
+        .wa-item.active-chat::before { content: ''; position: absolute; left: 0; top: 10%; height: 80%; width: 4px; background: var(--accent); border-radius: 0 4px 4px 0; }
+        
+        .wa-avatar { width: 50px; height: 50px; border-radius: 16px; background: #2c2c2e; display: flex; justify-content: center; align-items: center; font-size: 18px; font-weight: 500; color: white; margin-right: 15px; flex-shrink: 0; background-size: cover; background-position: center; position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.2);}
+        .wa-item-details { flex: 1; border-bottom: 1px solid var(--border); padding-bottom: 12px; display: flex; flex-direction: column; justify-content: center; }
         .wa-item:last-child .wa-item-details { border-bottom: none; }
         
-        .wa-item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px; }
-        .wa-name { font-size: 17px; font-weight: 500; color: var(--wa-text-main); }
-        .wa-time { font-size: 12px; color: var(--wa-text-muted); }
-        .wa-last-msg { font-size: 14px; color: var(--wa-text-muted); display: flex; justify-content: space-between; align-items: center; }
+        .wa-item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+        .wa-name { font-size: 16px; font-weight: 500; color: var(--text-main); }
+        .wa-time { font-size: 12px; color: var(--accent); font-weight: 500;}
+        .wa-last-msg { font-size: 13px; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center; }
         
-        .status-dot { width: 12px; height: 12px; border-radius: 50%; background: #555; position: absolute; bottom: 0; right: 0; border: 2px solid var(--wa-bg); }
-        .online { background: var(--wa-green); box-shadow: 0 0 5px var(--wa-green); }
+        .status-dot { width: 14px; height: 14px; border-radius: 50%; background: #555; position: absolute; bottom: -2px; right: -2px; border: 3px solid var(--bg-panel); transition: 0.3s;}
+        .online { background: var(--accent); }
 
-        .req-btn { background: var(--wa-green-dark); color: var(--wa-bg); border: none; padding: 6px 15px; border-radius: 20px; font-weight: 600; cursor: pointer; }
+        .req-btn { background: var(--accent); color: white; border: none; padding: 6px 16px; border-radius: 8px; font-weight: 600; font-size: 12px; cursor: pointer; transition: 0.2s;}
+        .req-btn:hover { background: #059669; }
 
-        #coming-soon-view { display: none; flex: 1; justify-content: center; align-items: center; flex-direction: column; color: var(--wa-text-muted); }
-        #coming-soon-view h3 { color: var(--wa-text-main); margin-bottom: 10px; font-size: 24px;}
+        #coming-soon-view { display: none; flex: 1; justify-content: center; align-items: center; flex-direction: column; color: var(--text-muted); }
+        #coming-soon-view h3 { color: var(--text-main); margin-bottom: 10px; font-size: 20px;}
 
-        .fab { position: absolute; bottom: 85px; right: 20px; width: 55px; height: 55px; background: var(--wa-green); border-radius: 16px; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); cursor: pointer; z-index: 20; transition: transform 0.2s; }
+        /* Premium Floating Action Button */
+        .fab { position: absolute; bottom: 85px; right: 20px; width: 56px; height: 56px; background: var(--msg-mine-bg); border-radius: 18px; display: flex; justify-content: center; align-items: center; box-shadow: 0 8px 20px var(--accent-glow); cursor: pointer; z-index: 20; transition: 0.3s; }
+        .fab:hover { transform: translateY(-3px); box-shadow: 0 12px 25px var(--accent-glow); }
         .fab:active { transform: scale(0.95); }
-        .fab span { font-size: 24px; color: var(--wa-bg); font-weight: bold; }
+        .fab span { font-size: 24px; color: white; }
 
-        #bottom-nav { display: flex; justify-content: space-around; align-items: center; background: var(--wa-header-bg); border-top: 1px solid var(--wa-border); position: absolute; bottom: 0; left: 0; width: 100%; height: 70px; z-index: 20; padding: 0 10px; flex-shrink: 0;}
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--wa-text-muted); cursor: pointer; width: 25%; }
-        .nav-icon { padding: 4px 15px; border-radius: 20px; margin-bottom: 5px; font-size: 20px; transition: 0.2s; }
-        .nav-text { font-size: 13px; font-weight: 500; }
-        .nav-item.active .nav-icon { background: var(--wa-nav-active-bg); color: var(--wa-nav-active-text); }
-        .nav-item.active .nav-text { color: var(--wa-text-main); }
+        #bottom-nav { display: flex; justify-content: space-around; align-items: center; background: var(--glass-bg); backdrop-filter: blur(15px); border-top: 1px solid var(--border); position: absolute; bottom: 0; left: 0; width: 100%; height: 70px; z-index: 20; padding: 0 10px; flex-shrink: 0;}
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-muted); cursor: pointer; width: 25%; transition: 0.3s;}
+        .nav-icon { font-size: 22px; margin-bottom: 4px; transition: 0.3s; }
+        .nav-text { font-size: 11px; font-weight: 500; }
+        .nav-item.active { color: var(--accent); }
+        .nav-item.active .nav-icon { transform: translateY(-2px); }
 
 
         /* ================= CHAT SCREEN ================= */
-        /* Fixed position solves the mobile bottom cut-off issue */
-        #chat-screen { width: 100%; position: fixed; top: 0; bottom: 0; left: 0; background: var(--wa-chat-bg); z-index: 50; transform: translateX(100%); transition: transform 0.3s ease; display: flex; flex-direction: column; }
+        #chat-screen { width: 100%; position: fixed; top: 0; bottom: 0; left: 0; background: var(--bg-base); z-index: 50; transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1); display: flex; flex-direction: column; }
         body.chat-active #chat-screen { transform: translateX(0); }
-        body.chat-active #main-screen { transform: translateX(-30%); opacity: 0.5; }
+        body.chat-active #main-screen { transform: translateX(-30%); filter: brightness(0.7); }
 
-        .chat-header-bar { display: flex; align-items: center; padding: 10px 15px; background: var(--wa-header-bg); gap: 10px; border-bottom: 1px solid var(--wa-border); flex-shrink: 0;}
-        .back-btn { font-size: 24px; color: var(--wa-text-main); cursor: pointer; padding-right: 5px; font-weight: bold;}
+        .chat-header-bar { display: flex; align-items: center; padding: 12px 20px; background: var(--glass-bg); backdrop-filter: blur(15px); gap: 15px; border-bottom: 1px solid var(--border); flex-shrink: 0; z-index: 10;}
+        .back-btn { font-size: 22px; color: var(--text-main); cursor: pointer; display: flex; align-items: center;}
         .chat-header-info { flex: 1; display: flex; flex-direction: column; }
-        .chat-header-name { font-size: 16px; font-weight: 500; color: var(--wa-text-main); }
-        .chat-header-sub { font-size: 12px; color: var(--wa-text-muted); }
+        .chat-header-name { font-size: 16px; font-weight: 600; color: var(--text-main); }
+        .chat-header-sub { font-size: 12px; color: var(--accent); font-weight: 500;}
 
-        /* Added flex-basis to push input area properly */
-        #messages { flex: 1; flex-basis: 0; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-size: cover; background-blend-mode: overlay; background-color: rgba(11, 20, 26, 0.9); overscroll-behavior-y: contain;}
+        /* Premium Dark Chat Background */
+        #messages { flex: 1; flex-basis: 0; padding: 25px 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: radial-gradient(circle at center, #111 0%, #000 100%); overscroll-behavior-y: contain;}
         
-        .msg { max-width: 80%; padding: 8px 12px; border-radius: 12px; position: relative; word-wrap: break-word; font-size: 15px; line-height: 1.4; box-shadow: 0 1px 1px rgba(0,0,0,0.1); }
-        .my-msg { background: var(--wa-msg-mine); align-self: flex-end; border-top-right-radius: 4px; }
-        .friend-msg { background: var(--wa-msg-friend); align-self: flex-start; border-top-left-radius: 4px; }
-        .msg img { max-width: 100%; border-radius: 8px; margin-top: 5px; cursor: pointer; }
-        .time { font-size: 11px; color: rgba(255,255,255,0.6); display: block; text-align: right; margin-top: 2px; float: right; margin-left: 10px; margin-top: 5px;}
-
-        /* Input Area fixed padding for mobile */
-        #input-area { padding: 10px 15px; padding-bottom: max(10px, env(safe-area-inset-bottom)); background: var(--wa-header-bg); display: flex; display: none; gap: 10px; align-items: center; flex-shrink: 0; border-top: 1px solid var(--wa-border);}
-        .attach-btn { background: transparent; color: var(--wa-text-muted); border: none; font-size: 24px; cursor: pointer; padding: 5px; }
-        #msgInput { flex: 1; padding: 12px 20px; border: none; border-radius: 25px; background: var(--wa-search-bg); color: var(--wa-text-main); outline: none; font-size: 15px; }
-        #sendBtn { background: var(--wa-green-dark); color: var(--wa-bg); border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 18px; flex-shrink: 0;}
-
-        /* MODALS */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 1000; }
-        .modal-box { background: var(--wa-search-bg); padding: 25px; border-radius: 15px; width: 90%; max-width: 350px; color: var(--wa-text-main); }
-        .modal-box h3 { margin-bottom: 15px; color: white;}
-        .modal-box input[type="text"] { width: 100%; padding: 12px; margin-bottom: 20px; border-radius: 8px; border: none; background: var(--wa-bg); color: var(--wa-text-main); font-size: 15px; outline: none;}
-        .modal-buttons { display: flex; gap: 10px; justify-content: flex-end; }
-        .btn-cancel { background: transparent; border: none; padding: 8px 15px; cursor: pointer; color: var(--wa-green); font-weight: 500; font-size: 15px;}
-        .btn-save { background: var(--wa-green); border: none; padding: 8px 20px; border-radius: 20px; cursor: pointer; color: var(--wa-bg); font-weight: 600; font-size: 15px;}
+        .msg { max-width: 75%; padding: 10px 16px; position: relative; word-wrap: break-word; font-size: 14.5px; line-height: 1.5; animation: popUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; opacity: 0; transform-origin: bottom; }
+        .my-msg { background: var(--msg-mine-bg); color: var(--msg-mine-text); align-self: flex-end; border-radius: 18px 18px 4px 18px; box-shadow: 0 4px 15px var(--accent-glow); transform-origin: bottom right;}
+        .friend-msg { background: var(--msg-friend-bg); color: var(--msg-friend-text); align-self: flex-start; border-radius: 18px 18px 18px 4px; border: 1px solid var(--border); transform-origin: bottom left;}
         
-        #previewImg { max-width: 100%; max-height: 250px; border-radius: 8px; margin-bottom: 15px; display: block; margin-left: auto; margin-right: auto;}
-        #lightboxImg { max-width: 95%; max-height: 95%; border-radius: 10px; }
+        .msg img { max-width: 100%; border-radius: 10px; margin-top: 5px; cursor: pointer; transition: 0.3s; }
+        .msg img:hover { filter: brightness(1.1); }
+        .time { font-size: 10px; opacity: 0.7; margin-top: 4px; display: block; text-align: right; float: right; margin-left: 12px;}
 
-        /* ================= DESKTOP FIX (Secure Chat WEB SPLIT SCREEN) ================= */
+        @keyframes popUp { from { opacity: 0; transform: scale(0.9) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+        /* Sleek Input Area */
+        #input-area { padding: 12px 15px; padding-bottom: max(12px, env(safe-area-inset-bottom)); background: var(--glass-bg); backdrop-filter: blur(15px); display: flex; display: none; gap: 12px; align-items: center; flex-shrink: 0; border-top: 1px solid var(--border);}
+        .attach-btn { background: rgba(255,255,255,0.05); color: var(--text-main); border: 1px solid var(--border); width: 42px; height: 42px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 20px; cursor: pointer; transition: 0.2s;}
+        .attach-btn:hover { background: rgba(255,255,255,0.1); }
+        #msgInput { flex: 1; padding: 12px 20px; border: 1px solid var(--border); border-radius: 24px; background: rgba(255,255,255,0.03); color: var(--text-main); outline: none; font-size: 15px; transition: 0.3s; }
+        #msgInput:focus { border-color: var(--accent); background: rgba(16,185,129,0.03);}
+        #sendBtn { background: var(--msg-mine-bg); color: white; border: none; width: 44px; height: 44px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 18px; flex-shrink: 0; box-shadow: 0 4px 12px var(--accent-glow); transition: 0.2s;}
+        #sendBtn:hover { transform: scale(1.05); }
+
+        /* Glassmorphism Modals */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 1000; opacity: 0; transition: opacity 0.3s;}
+        .modal-overlay.show { opacity: 1; }
+        .modal-box { background: rgba(20, 20, 22, 0.85); backdrop-filter: blur(20px); border: 1px solid var(--border); padding: 25px; border-radius: 24px; width: 90%; max-width: 360px; color: var(--text-main); box-shadow: 0 20px 40px rgba(0,0,0,0.5); transform: translateY(20px); transition: 0.3s;}
+        .modal-overlay.show .modal-box { transform: translateY(0); }
+        
+        .modal-box h3 { margin-bottom: 20px; color: white; font-weight: 600; text-align: center;}
+        .modal-box input[type="text"] { width: 100%; padding: 14px; margin-bottom: 20px; border-radius: 12px; border: 1px solid var(--border); background: rgba(0,0,0,0.3); color: var(--text-main); font-size: 14px; outline: none; transition: 0.3s;}
+        .modal-box input[type="text"]:focus { border-color: var(--accent); }
+        .modal-buttons { display: flex; gap: 12px; justify-content: stretch; }
+        .modal-buttons button { flex: 1; padding: 12px; border-radius: 12px; font-weight: 600; font-size: 14px; cursor: pointer; transition: 0.2s; border: none; }
+        .btn-cancel { background: rgba(255,255,255,0.05); color: var(--text-main); }
+        .btn-cancel:hover { background: rgba(255,255,255,0.1); }
+        .btn-save { background: var(--msg-mine-bg); color: white; box-shadow: 0 4px 15px var(--accent-glow);}
+        .btn-save:hover { filter: brightness(1.1); }
+        
+        #previewImg { max-width: 100%; max-height: 250px; border-radius: 12px; margin-bottom: 20px; display: block; margin-left: auto; margin-right: auto; object-fit: cover;}
+        #lightboxImg { max-width: 95%; max-height: 95%; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+
+        /* Desktop Empty State */
+        #desktop-empty { display: none; flex: 1; flex-direction: column; justify-content: center; align-items: center; background: var(--bg-base); color: var(--text-muted); text-align: center; border-left: 1px solid var(--border); }
+        .empty-icon { font-size: 60px; margin-bottom: 20px; opacity: 0.5; }
+        #desktop-empty h2 { color: var(--text-main); font-weight: 500; margin-bottom: 8px;}
+        .badge { background: rgba(16,185,129,0.1); color: var(--accent); padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; margin-top: 20px; border: 1px solid var(--accent-glow);}
+
+        /* ================= DESKTOP FIX (SPLIT SCREEN) ================= */
         @media (min-width: 768px) {
             body { flex-direction: row; }
-            #main-screen { width: 400px; flex-shrink: 0; border-right: 1px solid var(--wa-border); }
-            body.chat-active #main-screen { transform: none; opacity: 1; }
+            #main-screen { width: 380px; flex-shrink: 0; border-right: 1px solid var(--border); }
+            body.chat-active #main-screen { transform: none; filter: none; }
             
-            #chat-screen { position: relative; flex: 1; transform: translateX(0); z-index: 5; border-left: 1px solid var(--wa-border); display: flex;}
-            
-            /* Hide back button on laptop since it's split screen */
+            #chat-screen { position: relative; flex: 1; transform: translateX(0); z-index: 5; border-left: none; display: flex;}
             .back-btn { display: none !important; }
             
-            /* Initial state before selecting a chat */
-            #chat-header-content { display: none; }
-            body.chat-active #chat-header-content { display: flex; width: 100%; align-items: center; gap: 10px; }
+            #desktop-empty { display: flex; }
+            body.chat-active #desktop-empty { display: none; }
             
-            #messages, #input-area, #chatTitle, #typingIndicator { opacity: 0.2; pointer-events: none;}
-            body.chat-active #messages, body.chat-active #input-area, body.chat-active #chatTitle, body.chat-active #typingIndicator { opacity: 1; pointer-events: auto;}
+            #chat-header-content { display: none; }
+            body.chat-active #chat-header-content { display: flex; width: 100%; align-items: center; gap: 15px; }
+            
+            /* Hide chat elements when no chat selected */
+            #messages, #input-area, .chat-header-bar { display: none; }
+            body.chat-active #messages, body.chat-active #input-area, body.chat-active .chat-header-bar { display: flex; }
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
@@ -139,41 +172,40 @@
 <body>
 
     <div id="main-screen">
-        
         <div class="wa-header">
-            <h2>Secure Chat</h2>
+            <h2>Chats</h2>
             <div class="wa-header-icons">
-                <span title="Refresh App" onclick="location.reload()">↻</span> <span>📸</span>
-                <span onclick="openProfileModal()">⚙️</span>
-                <span onclick="window.location.href='/logout'">🚪</span>
+                <span class="icon-btn" title="Refresh" onclick="location.reload()">↻</span>
+                <span class="icon-btn" onclick="openModal('profileModal')">⚙️</span>
+                <span class="icon-btn" onclick="window.location.href='/logout'">🚪</span>
             </div>
         </div>
 
         <div class="wa-search-container">
             <div class="wa-search-box">
                 <span>🔍</span>
-                <input type="text" id="localSearch" placeholder="Ask Meta AI or Search" onkeyup="filterLocalChats()">
+                <input type="text" id="localSearch" placeholder="Search chats..." onkeyup="filterLocalChats()">
             </div>
         </div>
 
         <div id="content-area">
             <div id="requestsListContainer" style="display:none;">
-                <div class="list-section-title">Friend Requests</div>
+                <div class="list-section-title">New Requests</div>
                 <div id="requestsList"></div>
             </div>
             
-            <div class="list-section-title" id="chatTitleSection">📝 Archived</div>
+            <div class="list-section-title" id="chatTitleSection">All Messages</div>
             <div id="friendsList"></div>
         </div>
 
         <div id="coming-soon-view">
-            <span style="font-size: 50px; margin-bottom: 20px;">🚧</span>
+            <span style="font-size: 40px; margin-bottom: 15px;">🚧</span>
             <h3>Coming Soon</h3>
-            <p>This feature is under development.</p>
+            <p style="font-size: 14px;">This feature is in beta.</p>
         </div>
 
-        <div class="fab" onclick="openAddUserModal()">
-            <span>➕</span>
+        <div class="fab" onclick="openModal('addUserModal')">
+            <span>+</span>
         </div>
 
         <div id="bottom-nav">
@@ -187,7 +219,7 @@
             </div>
             <div class="nav-item" onclick="switchTab('communities', this)">
                 <div class="nav-icon">👥</div>
-                <div class="nav-text">Communities</div>
+                <div class="nav-text">Groups</div>
             </div>
             <div class="nav-item" onclick="switchTab('calls', this)">
                 <div class="nav-icon">📞</div>
@@ -197,16 +229,24 @@
     </div>
 
 
+    <div id="desktop-empty">
+        <div class="empty-icon">💬</div>
+        <h2>Secure Chat Web</h2>
+        <p>Send and receive messages with end-to-end encryption.</p>
+        <div class="badge">🔒 24h Auto-Delete Active</div>
+    </div>
+
+
     <div id="chat-screen">
         <div class="chat-header-bar">
             <div class="back-btn" onclick="closeChat()">&#8592;</div>
-            <div id="chat-header-content" style="display: flex; align-items: center; flex: 1; gap: 10px;">
-                <div class="wa-avatar" id="chatAvatar" style="width: 40px; height: 40px; font-size: 16px; display: none;"></div>
+            <div id="chat-header-content" style="display: flex; align-items: center; flex: 1; gap: 15px;">
+                <div class="wa-avatar" id="chatAvatar" style="width: 42px; height: 42px; font-size: 16px; border-radius: 12px; display: none;"></div>
                 <div class="chat-header-info">
-                    <span class="chat-header-name" id="chatTitle">Select a user to chat</span>
+                    <span class="chat-header-name" id="chatTitle">Select a user</span>
                     <span class="chat-header-sub" id="typingIndicator"></span>
                 </div>
-                <div style="color: var(--wa-text-main); font-size: 20px; cursor: pointer;" onclick="location.reload()">↻</div> <div style="color: var(--wa-text-main); font-size: 20px;">⋮</div>
+                <div class="icon-btn" style="font-size: 20px; cursor: pointer;" onclick="location.reload()">↻</div>
             </div>
         </div>
         
@@ -215,7 +255,7 @@
         <div id="input-area">
             <button class="attach-btn" onclick="document.getElementById('fileInput').click()">📎</button>
             <input type="file" id="fileInput" accept="image/*" style="display:none;" onchange="previewImageBeforeSend(event)">
-            <input type="text" id="msgInput" placeholder="Message" autocomplete="off">
+            <input type="text" id="msgInput" placeholder="Type a secure message..." autocomplete="off">
             <button id="sendBtn" onclick="sendMessage()">➤</button>
         </div>
     </div>
@@ -223,28 +263,27 @@
 
     <div class="modal-overlay" id="addUserModal">
         <div class="modal-box">
-            <h3>Add New Contact</h3>
-            <input type="text" id="apiSearchUsername" placeholder="Enter exactly username..." autocomplete="off">
+            <h3>Add Contact</h3>
+            <input type="text" id="apiSearchUsername" placeholder="Enter exact username..." autocomplete="off">
             <div class="modal-buttons">
-                <button class="btn-cancel" onclick="document.getElementById('addUserModal').style.display='none'">Cancel</button>
-                <button class="btn-save" onclick="searchUserAPI()">Search & Add</button>
+                <button class="btn-cancel" onclick="closeModal('addUserModal')">Cancel</button>
+                <button class="btn-save" onclick="searchUserAPI()">Add User</button>
             </div>
         </div>
     </div>
 
     <div class="modal-overlay" id="profileModal">
         <div class="modal-box">
-            <h3>My Profile</h3>
-            <div style="text-align: center; margin-bottom: 15px;">
-                <div class="wa-avatar" id="editProfilePic" style="width: 80px; height: 80px; margin: 0 auto; font-size: 30px; cursor: pointer;" onclick="document.getElementById('profilePicInput').click()"></div>
+            <h3>Edit Profile</h3>
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div class="wa-avatar" id="editProfilePic" style="width: 86px; height: 86px; border-radius: 24px; margin: 0 auto; font-size: 32px; cursor: pointer;" onclick="document.getElementById('profilePicInput').click()"></div>
                 <input type="file" id="profilePicInput" accept="image/*" style="display: none;" onchange="handleProfilePicChange(event)">
-                <small style="color: var(--wa-green); display:block; margin-top:5px;">Change Photo</small>
+                <small style="color: var(--accent); display:block; margin-top:10px; font-weight: 500;">Tap to change photo</small>
             </div>
-            <label style="font-size:12px; color:var(--wa-text-muted); margin-bottom:5px; display:block;">Name</label>
-            <input type="text" id="editNameInput">
+            <input type="text" id="editNameInput" placeholder="Your Display Name">
             <div class="modal-buttons">
-                <button class="btn-cancel" onclick="document.getElementById('profileModal').style.display='none'">Cancel</button>
-                <button class="btn-save" onclick="saveProfile()">Save</button>
+                <button class="btn-cancel" onclick="closeModal('profileModal')">Cancel</button>
+                <button class="btn-save" onclick="saveProfile()">Save Changes</button>
             </div>
         </div>
     </div>
@@ -255,12 +294,12 @@
             <img id="previewImg" src="" alt="Preview">
             <div class="modal-buttons">
                 <button class="btn-cancel" onclick="cancelImageSend()">Cancel</button>
-                <button class="btn-save" onclick="confirmSendImage()">Send</button>
+                <button class="btn-save" onclick="confirmSendImage()">Send Securely</button>
             </div>
         </div>
     </div>
 
-    <div class="modal-overlay" id="lightboxModal" onclick="this.style.display='none'">
+    <div class="modal-overlay" id="lightboxModal" onclick="closeModal('lightboxModal')">
         <img id="lightboxImg" src="" alt="Full Screen">
     </div>
 
@@ -271,6 +310,18 @@
         let typingTimeout = null;
         let pendingImageBase64 = null; 
         let myCurrentPic = '';
+
+        // Modal Utility Functions for smooth animation
+        function openModal(id) {
+            const modal = document.getElementById(id);
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('show'), 10);
+        }
+        function closeModal(id) {
+            const modal = document.getElementById(id);
+            modal.classList.remove('show');
+            setTimeout(() => modal.style.display = 'none', 300);
+        }
 
         function switchTab(tabName, element) {
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
@@ -325,7 +376,7 @@
             
             let myAvatarStyle = data.my_pic ? `background-image: url('${data.my_pic}'); color: transparent;` : '';
             friendList.innerHTML += `
-                <div class="wa-item">
+                <div class="wa-item" onclick="openChat(${myId}, '${data.my_name}', '${data.my_username}', '${data.my_pic}')" id="friend-box-${myId}">
                     <div class="wa-avatar" style="${myAvatarStyle}">${data.my_pic ? '' : data.my_name.charAt(0)}</div>
                     <div class="wa-item-details">
                         <div class="wa-item-header">
@@ -333,7 +384,7 @@
                             <span class="wa-time">📌</span>
                         </div>
                         <div class="wa-last-msg">
-                            <span>Message yourself</span>
+                            <span>Saved Messages</span>
                         </div>
                     </div>
                 </div>`;
@@ -344,7 +395,7 @@
                 let avatarText = f.pic && f.pic !== 'null' ? '' : f.name.charAt(0);
 
                 friendList.innerHTML += `
-                <div class="wa-item friend-chat-item" data-name="${f.name.toLowerCase()}" onclick="openChat(${f.id}, '${f.name}', '${f.username}', '${f.pic}')">
+                <div class="wa-item friend-chat-item" data-name="${f.name.toLowerCase()}" id="friend-box-${f.id}" onclick="openChat(${f.id}, '${f.name}', '${f.username}', '${f.pic}')">
                     <div class="wa-avatar" style="${avatarStyle}">
                         ${avatarText}
                         <div class="${statusClass}" id="status-${f.id}"></div>
@@ -352,7 +403,6 @@
                     <div class="wa-item-details">
                         <div class="wa-item-header">
                             <span class="wa-name">${f.name}</span>
-                            <span class="wa-time">Active</span>
                         </div>
                         <div class="wa-last-msg">
                             <span>@${f.username}</span>
@@ -386,10 +436,6 @@
             }
         }
 
-        function openAddUserModal() {
-            document.getElementById('addUserModal').style.display = 'flex';
-        }
-
         async function searchUserAPI() {
             const username = document.getElementById('apiSearchUsername').value;
             if(!username) return;
@@ -400,14 +446,12 @@
                 if(confirm(`Send request to ${data.name}?`)) {
                     await fetch('/send_request', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({receiver_id: data.id}) });
                     alert("Request sent!");
-                    document.getElementById('addUserModal').style.display = 'none';
+                    closeModal('addUserModal');
                     document.getElementById('apiSearchUsername').value = '';
                 }
             } else { alert(data.error); }
         }
 
-        function openProfileModal() { document.getElementById('profileModal').style.display = 'flex'; }
-        
         function handleProfilePicChange(event) {
             const file = event.target.files[0];
             if(file) {
@@ -427,7 +471,7 @@
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({name: newName, profile_pic: myCurrentPic})
             });
-            document.getElementById('profileModal').style.display = 'none';
+            closeModal('profileModal');
             loadData(); 
         }
 
@@ -438,6 +482,12 @@
 
         async function openChat(friendId, friendName, friendUsername, friendPic) {
             currentChatFriendId = friendId;
+            
+            // Highlight active chat in list
+            document.querySelectorAll('.wa-item').forEach(el => el.classList.remove('active-chat'));
+            const activeBox = document.getElementById(`friend-box-${friendId}`);
+            if(activeBox) activeBox.classList.add('active-chat');
+
             document.getElementById('chatTitle').innerText = friendName;
             document.getElementById('typingIndicator').innerText = `@${friendUsername}`;
             
@@ -446,7 +496,6 @@
             setAvatar('chatAvatar', friendPic === 'null' ? null : friendPic, friendName);
             
             document.body.classList.add('chat-active');
-            document.getElementById('input-area').style.display = 'flex';
             
             socket.emit('join_private', {friend_id: friendId});
 
@@ -462,7 +511,7 @@
         function closeChat() {
             document.body.classList.remove('chat-active');
             currentChatFriendId = null;
-            document.getElementById('input-area').style.display = 'none';
+            document.querySelectorAll('.wa-item').forEach(el => el.classList.remove('active-chat'));
         }
 
         socket.on('user_status_change', function(data) {
@@ -481,12 +530,12 @@
             if(data.sender_id === currentChatFriendId) {
                 const indicator = document.getElementById('typingIndicator');
                 indicator.innerText = "typing...";
-                indicator.style.color = "var(--wa-green)";
+                indicator.style.color = "var(--accent)";
                 
                 clearTimeout(typingTimeout);
                 typingTimeout = setTimeout(() => { 
                     indicator.innerText = "online"; 
-                    indicator.style.color = "var(--wa-text-muted)";
+                    indicator.style.color = "var(--text-muted)";
                 }, 2000);
             }
         });
@@ -498,7 +547,7 @@
                 reader.onload = function(e) {
                     pendingImageBase64 = e.target.result;
                     document.getElementById('previewImg').src = pendingImageBase64;
-                    document.getElementById('imagePreviewModal').style.display = 'flex';
+                    openModal('imagePreviewModal');
                 };
                 reader.readAsDataURL(file);
             }
@@ -507,7 +556,7 @@
 
         function cancelImageSend() {
             pendingImageBase64 = null;
-            document.getElementById('imagePreviewModal').style.display = 'none';
+            closeModal('imagePreviewModal');
         }
 
         function confirmSendImage() {
@@ -519,7 +568,7 @@
 
         function openLightbox(src) {
             document.getElementById('lightboxImg').src = src;
-            document.getElementById('lightboxModal').style.display = 'flex';
+            openModal('lightboxModal');
         }
 
         function sendMessage() {
@@ -537,7 +586,7 @@
                 if(data.sender_id === currentChatFriendId) {
                     const indicator = document.getElementById('typingIndicator');
                     indicator.innerText = "online";
-                    indicator.style.color = "var(--wa-text-muted)";
+                    indicator.style.color = "var(--text-muted)";
                 }
             }
         });
@@ -548,7 +597,7 @@
             div.className = isMine ? 'msg my-msg' : 'msg friend-msg';
             
             if(text.startsWith('data:image/')) {
-                div.innerHTML = `<img src="${text}" alt="Image" onclick="openLightbox('${text}')"><br><span class="time">${time}</span>`;
+                div.innerHTML = `<img src="${text}" alt="Image" onclick="openLightbox('${text}')"><span class="time">${time}</span>`;
             } else {
                 div.innerHTML = `${text} <span class="time">${time}</span>`;
             }
