@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Secure Chat Dashboard</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
@@ -41,10 +42,10 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
-        body { margin: 0; display: flex; height: 100vh; background: var(--bg-main); color: var(--text-main); overflow: hidden; transition: 0.3s; }
+        body { margin: 0; display: flex; height: 100vh; background: var(--bg-main); color: var(--text-main); overflow: hidden; transition: 0.3s; position: relative; }
         
         /* Sidebar Design */
-        #sidebar { width: 340px; background: var(--bg-sidebar); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; }
+        #sidebar { width: 340px; background: var(--bg-sidebar); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; z-index: 10; transition: transform 0.3s ease; }
         .sidebar-header { padding: 20px; background: var(--bg-header); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); cursor: pointer; transition: 0.2s;}
         .sidebar-header:hover { background: var(--item-hover); }
         .user-profile { display: flex; align-items: center; gap: 12px; }
@@ -68,17 +69,20 @@
         .online { background: #2ed573; box-shadow: 0 0 8px #2ed573; }
 
         /* Main Chat Window Design */
-        #chat-area { flex: 1; display: flex; flex-direction: column; background: var(--bg-main); }
+        #chat-area { flex: 1; display: flex; flex-direction: column; background: var(--bg-main); position: relative; z-index: 5; }
         #chat-header { padding: 20px; background: var(--bg-header); border-bottom: 1px solid var(--border-color); display: flex; flex-direction: column; justify-content: center; }
         .header-top { display: flex; justify-content: space-between; align-items: center; }
         .active-user-title { font-weight: 600; font-size: 17px; display: flex; align-items: center; gap: 10px; }
+        
+        #backBtn { display: none; background: none; border: none; color: var(--text-main); font-size: 24px; cursor: pointer; margin-right: 5px; padding: 0; line-height: 1;}
+        
         .disappear-badge { font-size: 11px; color: #ff4757; background: rgba(255,71,87,0.1); padding: 5px 12px; border-radius: 20px; border: 1px solid rgba(255,71,87,0.2); display: none;}
         
         #typingIndicator { font-size: 12px; color: var(--accent); margin-top: 5px; height: 18px; font-style: italic; opacity: 0; transition: opacity 0.3s; }
 
         #messages { flex: 1; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
         
-        .msg { max-width: 60%; padding: 12px 18px; border-radius: 20px; position: relative; word-wrap: break-word; font-size: 14px; line-height: 1.5; animation: popUp 0.25s ease; }
+        .msg { max-width: 75%; padding: 12px 18px; border-radius: 20px; position: relative; word-wrap: break-word; font-size: 14px; line-height: 1.5; animation: popUp 0.25s ease; }
         .msg img { max-width: 100%; border-radius: 10px; margin-top: 5px; cursor: pointer; transition: 0.2s; }
         .msg img:hover { opacity: 0.9; }
         
@@ -88,15 +92,15 @@
         .friend-msg { background: var(--msg-friend-bg); color: var(--msg-friend-text); align-self: flex-start; border-bottom-left-radius: 2px; border: 1px solid var(--border-color); }
         .time { font-size: 10px; opacity: 0.7; margin-top: 6px; display: block; text-align: right; }
 
-        #input-area { padding: 20px; background: var(--bg-header); display: flex; display: none; gap: 12px; border-top: 1px solid var(--border-color); align-items: center;}
+        #input-area { padding: 15px 20px; background: var(--bg-header); display: flex; display: none; gap: 10px; border-top: 1px solid var(--border-color); align-items: center;}
         
-        .attach-btn { background: var(--item-hover); color: var(--text-main); border: 1px solid var(--border-color); width: 45px; height: 45px; border-radius: 50%; cursor: pointer; font-size: 18px; display: flex; justify-content: center; align-items: center; transition: 0.3s; }
+        .attach-btn { background: var(--item-hover); color: var(--text-main); border: 1px solid var(--border-color); width: 45px; height: 45px; border-radius: 50%; cursor: pointer; font-size: 18px; display: flex; justify-content: center; align-items: center; transition: 0.3s; flex-shrink: 0; }
         #fileInput { display: none; }
         
-        #msgInput { flex: 1; padding: 15px 22px; border: 1px solid var(--border-color); border-radius: 30px; background: var(--input-bg); color: var(--text-main); outline: none; font-size: 14px; }
-        #sendBtn { background: var(--accent); color: #fff; border: none; padding: 0 28px; height: 45px; border-radius: 30px; cursor: pointer; font-weight: 600; }
+        #msgInput { flex: 1; padding: 12px 20px; border: 1px solid var(--border-color); border-radius: 30px; background: var(--input-bg); color: var(--text-main); outline: none; font-size: 14px; }
+        #sendBtn { background: var(--accent); color: #fff; border: none; padding: 0 20px; height: 45px; border-radius: 30px; cursor: pointer; font-weight: 600; flex-shrink: 0; }
 
-        /* MODALS (Profile, Image Preview, Lightbox) */
+        /* MODALS */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(5px); }
         .modal-box { background: var(--bg-header); padding: 25px; border-radius: 15px; width: 90%; max-width: 400px; color: var(--text-main); box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 1px solid var(--border-color); }
         .modal-box h3 { margin-bottom: 15px; }
@@ -108,10 +112,28 @@
         .theme-toggle { margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
         
         #previewImg { max-width: 100%; max-height: 250px; border-radius: 8px; margin-bottom: 15px; display: block; margin-left: auto; margin-right: auto;}
-        #lightboxImg { max-width: 90%; max-height: 90%; border-radius: 10px; box-shadow: 0 0 20px rgba(0,0,0,0.8); }
+        #lightboxImg { max-width: 95%; max-height: 95%; border-radius: 10px; box-shadow: 0 0 20px rgba(0,0,0,0.8); }
 
         ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
+
+        /* ================= MOBILE RESPONSIVE CSS ================= */
+        @media (max-width: 768px) {
+            #sidebar { width: 100%; position: absolute; left: 0; top: 0; height: 100%; }
+            #chat-area { width: 100%; position: absolute; left: 0; top: 0; height: 100%; transform: translateX(100%); transition: transform 0.3s ease; }
+            
+            /* Jab chat open ho tab Sidebar chhup jaye aur Chat bahar aa jaye */
+            body.chat-active #sidebar { transform: translateX(-30%); opacity: 0; }
+            body.chat-active #chat-area { transform: translateX(0); }
+            
+            #backBtn { display: block; }
+            .disappear-badge { display: none !important; } /* Mobile me space bachane ke liye chhupaya */
+            .msg { max-width: 85%; }
+            
+            #chat-header { padding: 15px; }
+            .active-user-title { font-size: 15px; }
+            #input-area { padding: 10px 15px; }
+        }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
 </head>
@@ -146,10 +168,10 @@
         <div id="chat-header">
             <div class="header-top">
                 <div class="active-user-title">
-                    <div class="avatar" id="chatAvatar" style="display: none;"></div>
-                    <div><div id="chatTitle">Select a user to begin conversation</div></div>
+                    <button id="backBtn" onclick="closeChat()">&#8592;</button> <div class="avatar" id="chatAvatar" style="display: none; width: 35px; height: 35px; font-size: 14px;"></div>
+                    <div><div id="chatTitle">Select a user to chat</div></div>
                 </div>
-                <span class="disappear-badge" id="disappearNote">🔒 End-to-End & 24h Auto-Delete</span>
+                <span class="disappear-badge" id="disappearNote">🔒 24h Auto-Delete</span>
             </div>
             <div id="typingIndicator">Typing...</div>
         </div>
@@ -159,7 +181,7 @@
         <div id="input-area">
             <button class="attach-btn" onclick="document.getElementById('fileInput').click()">📎</button>
             <input type="file" id="fileInput" accept="image/*" onchange="previewImageBeforeSend(event)">
-            <input type="text" id="msgInput" placeholder="Write a message..." autocomplete="off">
+            <input type="text" id="msgInput" placeholder="Message..." autocomplete="off">
             <button id="sendBtn" onclick="sendMessage()">Send</button>
         </div>
     </div>
@@ -221,7 +243,7 @@
         let myId = null;
         let currentChatFriendId = null;
         let typingTimeout = null;
-        let pendingImageBase64 = null; // Send karne se pehle save rakhne ke liye
+        let pendingImageBase64 = null; 
         let myCurrentPic = '';
 
         async function loadData() {
@@ -237,7 +259,6 @@
             setAvatar('myAvatar', data.my_pic, data.my_name);
             setAvatar('editProfilePic', data.my_pic, data.my_name);
 
-            // Requests
             const reqList = document.getElementById('requestsList');
             reqList.innerHTML = '';
             data.requests.forEach(req => {
@@ -247,12 +268,10 @@
                 </div>`;
             });
 
-            // Friends
             const friendList = document.getElementById('friendsList');
             friendList.innerHTML = '';
             data.friends.forEach(f => {
                 let statusClass = f.is_online ? 'status-dot online' : 'status-dot';
-                
                 let avatarStyle = f.pic ? `background-image: url('${f.pic}'); color: transparent;` : '';
                 let avatarText = f.pic ? '' : f.name.charAt(0);
 
@@ -271,10 +290,9 @@
             });
         }
 
-        // Set Avatar Helper
         function setAvatar(elementId, picBase64, name) {
             const el = document.getElementById(elementId);
-            if(picBase64) {
+            if(picBase64 && picBase64 !== 'null') {
                 el.style.backgroundImage = `url('${picBase64}')`;
                 el.innerText = '';
             } else {
@@ -283,9 +301,8 @@
             }
         }
 
-        // --- PROFILE EDIT LOGIC ---
         function openProfileModal(e) {
-            if(e.target.id === 'logoutBtn') return; // Logout par click ho to modal na khule
+            if(e.target.id === 'logoutBtn') return; 
             document.getElementById('profileModal').style.display = 'flex';
         }
 
@@ -309,9 +326,8 @@
                 body: JSON.stringify({name: newName, profile_pic: myCurrentPic})
             });
             document.getElementById('profileModal').style.display = 'none';
-            loadData(); // Refresh UI
+            loadData(); 
         }
-        // --------------------------
 
         socket.on('user_status_change', function(data) {
             const statusIndicator = document.getElementById(`status-${data.user_id}`);
@@ -343,7 +359,7 @@
 
         async function openChat(friendId, friendName, friendUsername, friendPic) {
             currentChatFriendId = friendId;
-            document.getElementById('chatTitle').innerHTML = `${friendName} <span style="font-size:12px; color:var(--text-muted); font-weight:400; margin-left:5px;">@${friendUsername}</span>`;
+            document.getElementById('chatTitle').innerHTML = `${friendName} <span style="font-size:11px; color:var(--text-muted); font-weight:400; margin-left:5px; display:block;">@${friendUsername}</span>`;
             
             const chatAvatar = document.getElementById('chatAvatar');
             chatAvatar.style.display = 'flex';
@@ -351,6 +367,9 @@
             
             document.getElementById('disappearNote').style.display = 'block';
             document.getElementById('input-area').style.display = 'flex';
+            
+            // MOBILE: Open Chat Window Animation
+            document.body.classList.add('chat-active');
             
             socket.emit('join_private', {friend_id: friendId});
 
@@ -361,6 +380,12 @@
             msgBox.innerHTML = '';
             messages.forEach(m => appendMessage(m.text, m.time, m.sender_id === myId));
             msgBox.scrollTop = msgBox.scrollHeight;
+        }
+
+        // MOBILE: Back button logic
+        function closeChat() {
+            document.body.classList.remove('chat-active');
+            currentChatFriendId = null;
         }
 
         // Typing
@@ -377,7 +402,6 @@
             }
         });
 
-        // --- IMAGE SEND PREVIEW LOGIC ---
         function previewImageBeforeSend(event) {
             const file = event.target.files[0];
             if (file && currentChatFriendId) {
@@ -403,14 +427,11 @@
                 cancelImageSend();
             }
         }
-        // --------------------------------
 
-        // --- IMAGE LIGHTBOX LOGIC ---
         function openLightbox(src) {
             document.getElementById('lightboxImg').src = src;
             document.getElementById('lightboxModal').style.display = 'flex';
         }
-        // ----------------------------
 
         function sendMessage() {
             const input = document.getElementById('msgInput');
@@ -433,7 +454,6 @@
             const div = document.createElement('div');
             div.className = isMine ? 'msg my-msg' : 'msg friend-msg';
             
-            // Image receive hui toh Lightbox on click lagao
             if(text.startsWith('data:image/')) {
                 div.innerHTML = `<img src="${text}" alt="Image" onclick="openLightbox('${text}')"> <span class="time">${time}</span>`;
             } else {
